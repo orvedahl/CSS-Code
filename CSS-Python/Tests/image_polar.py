@@ -6,7 +6,7 @@
 #
 
 import numpy as np
-from pylab import *
+import pylab
 from mpl_toolkits.axes_grid import make_axes_locatable
 from matplotlib import rc
 
@@ -22,7 +22,7 @@ def image_polar(field,radius,costheta,sintheta,r_bcz=[0.71],mini=-1,maxi=-1,\
                 cont=True,mycmap='jet',cbar=True,add_c=False,add_f=0,tit=''):
     """ Basic routine for polar plot
     --------------------------------------------------------------------------
-    field              : 2D array 
+    field              : 2D array of size (ntheta, nradius)
     radius             : radius
     costheta, sintheta : ...
     r_bcz              : add a horiztonal line at this position (given in Rsun)
@@ -43,51 +43,82 @@ def image_polar(field,radius,costheta,sintheta,r_bcz=[0.71],mini=-1,maxi=-1,\
     rtmp = r.reshape(1,n_r)
     cthtmp = costheta.reshape(n_t,1)
     sthtmp = sintheta.reshape(n_t,1)
-    xr = dot(cthtmp,rtmp)
-    yr = dot(sthtmp,rtmp)
+    xr = np.dot(cthtmp,rtmp)
+    yr = np.dot(sthtmp,rtmp)
 
     if (mini == -1):
         mini=field.min()
     if (maxi == -1):
         maxi=max(abs(mini),field.max())
 
-    hold(True)
-    im=pcolormesh(yr,xr,field,cmap=mycmap)
+    pylab.hold(True)
+    im=pylab.pcolormesh(yr,xr,field,cmap=mycmap)
+
+    # plot dotted lines at specified radii
     for rbcz in r_bcz:
-        plot(rbcz*sintheta,rbcz*costheta,'k--',[0,1],[0,0],'k--')
-    #plot((4.83/6.9599)*sintheta,(4.83/6.9599)*costheta,'k--',[0,1],[0,0],'k--')
-    axis('equal')
-    axis('off')
-    clim((mini,maxi))
-    xlim((0,1))
-    ylim((-1,1))
-    plot(r[0]*sintheta,r[0]*costheta,'k')
-    plot(r[n_r-1]*sintheta,r[n_r-1]*costheta,'k')
-    plot([0,0],[-r[n_r-1],r[n_r-1]],'k--')
-    plot([0,0],[-r[0],-r[n_r-1]],'k',[0,0],[r[n_r-1],r[0]],'k')
-    annotate(tit,xy=(0.05,0.05))
-    hold(False)
+        pylab.plot(rbcz*sintheta,rbcz*costheta,'k--')#,[0,1],[0,0],'k--')
+
+    # plot equator
+    pylab.plot([r[0],r[-1]], [0,0], 'k--')
+
+    # turn background cartesion axes off
+    pylab.axis('off')
+    pylab.clim((mini,maxi)) # set colorbar limits for pcolormesh
+
+    # left boundaries
+    xleftt = r[0]*sintheta[0]  # top
+    yleftt = r[0]*costheta[0]
+    xleftb = r[0]*sintheta[-1] # bottom
+    yleftb = r[0]*costheta[-1]
+    # right boundaries
+    xrightt = r[-1]*sintheta[0]  # top
+    yrightt = r[-1]*costheta[0]
+    xrightb = r[-1]*sintheta[-1] # bottom
+    yrightb = r[-1]*costheta[-1]
+    
+    xmin = min(xleftt, xleftb)
+    xmax = r[-1]
+    ymax = yrightt
+    ymin = yrightb
+    pylab.xlim((xmin, xmax))
+    pylab.ylim((ymin, ymax))
+    #xlim((0,1))
+    #ylim((-1,1))
+    # plot inner boundary
+    pylab.plot(r[0]*sintheta,r[0]*costheta,'k')
+    # plot outer boundary
+    pylab.plot(r[n_r-1]*sintheta,r[n_r-1]*costheta,'k')
+    pylab.scatter(r[0],0,marker='x')
+    pylab.scatter(r[-1],0,marker='x')
+    pylab.scatter(xleftt, yleftt, marker='x')
+    pylab.scatter(xleftb, yleftb, marker='x')
+    pylab.scatter(xrightt, yrightt, marker='x')
+    pylab.scatter(xrightb, yrightb, marker='x')
+    pylab.annotate(tit,xy=(0.05,0.05))
+    pylab.hold(False)
 
     if (cont):
-        hold(True)
+        pylab.hold(True)
         levs=mini+np.linspace(0,1,10)*(maxi-mini)
-        contour(yr,xr,field,colors='w',levels=levs)
-        hold(False)
+        pylab.contour(yr,xr,field,colors='w',levels=levs)
+        pylab.hold(False)
 
     if (add_c):
-        hold(True)
+        pylab.hold(True)
         mmini = add_f.min()
         mmaxi  = add_f.max()
         levs=mmini+np.linspace(0,1,10)*(mmaxi-mmini)
         levs = array([1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, \
                       1e-1, 5e-1, 1.0, 2.0])*1e23
-        contour(yr,xr,add_f,colors='k',levels=levs)
-        hold(False)
+        pylab.contour(yr,xr,add_f,colors='k',levels=levs)
+        pylab.hold(False)
 
-    hold(True)
+    pylab.hold(True)
     if (cbar):
-        divider = make_axes_locatable(gca())
+        #divider = make_axes_locatable(pylab.gca())
         #cax = divider.append_axes("right", "5%", pad="3%")
-        colorbar(im)#,cax=cax)
-    hold (False)
+        cb = pylab.colorbar(im)#,cax=cax)
+        cb.set_clim(mini, maxi) # set limits, same as above
+        cb.set_label(tit)
+    pylab.hold(False)
 
