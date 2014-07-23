@@ -1,0 +1,9 @@
+
+	Compressible Spherical Segment (CSS) Code
+
+	Auther: Kyle Augustson (NCAR)
+
+	Contains:
+		--Fortran source code
+		--IDL analysis routines
+		--Python analysis routines
