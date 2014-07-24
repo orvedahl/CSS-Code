@@ -22,8 +22,10 @@ from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx
 #--------------------------------------------------------------------
 from read_az_avg import *
 import defaults
+import constants
 from az_averages import *
 import streamfunction as sfunc
+import curved_polar
 #--------------------------------------------------------------------
 
 
@@ -199,6 +201,7 @@ class window(wx.Frame):
         self.plot_vmax = None
         self.plot_manual_colorbar_range = False
         self.plot_manual_slider = False
+        self.plot_aspect_ratio = 'auto'
 
     def SetMainMenuBar(self):
 
@@ -393,6 +396,7 @@ class buttonpanel(wx.Panel):
                 self.mainparent.plot_xmaxc = rmax
                 # theta is standard spherical theta so when plotting,
                 # lower theta is closer to top and larger theta is at bottom
+                # set limits in degrees (easier to interpret then radians)
                 self.mainparent.plot_yminc = numpy.amax(theta)*180./numpy.pi
                 self.mainparent.plot_ymaxc = numpy.amin(theta)*180./numpy.pi
                 self.mainparent.plot_xmino = rmin
@@ -800,6 +804,7 @@ class plotpanel(wx.Panel):
             m_vmin   = self.mainparent.plot_vmin
             m_vmax   = self.mainparent.plot_vmax
             cb_title = self.mainparent.plot_cmap_label
+            aspect   = self.mainparent.plot_aspect_ratio
 
             self.figure.clf()
             self.axes = self.figure.add_subplot(111)
@@ -877,13 +882,31 @@ class plotpanel(wx.Panel):
 
             if (not plot_1D):
                 extent = (xminc, xmaxc, yminc, ymaxc)
-                cax = self.axes.imshow(data, interpolation='quadric', cmap=cm,
-                                       extent=extent, origin='upper', 
-                                       vmin=vmin, vmax=vmax, aspect='auto')
 
-                cb = self.figure.colorbar(cax)
-                cb.set_clim(vmin, vmax)
-                cb.set_label(cb_title)
+                # FIXME: implement working version of curved plots
+                if (True):
+                    cax = self.axes.imshow(data, interpolation='quadric', 
+                                           cmap=cm, extent=extent, 
+                                           origin='upper', vmin=vmin, 
+                                           vmax=vmax, aspect='auto')
+
+                    cb = self.figure.colorbar(cax)
+                    cb.set_clim(vmin, vmax)
+                    cb.set_label(cb_title)
+
+                # EXPERIMENTAL: curved plots
+                else:
+                    data2 = numpy.zeros((len(theta), len(radius)))
+                    for i in range(len(theta)):
+                        th=theta[i]
+                        for j in range(len(radius)):
+                            rad=radius[j]
+                            data2[i,j] = rad*numpy.sin(th)
+                    curved_polar.polar_image(data2, radius, theta, 
+                                       radians=False, vmin=vmin, vmax=vmax,
+                                       cmap=cm, aspect=aspect, add_cont=False,
+                                       extent=None, cb_title=cb_title, 
+                                       r_bcz=[0.95*constants.rsol])
 
                 # title, labels
                 self.axes.set_title(title)
@@ -961,6 +984,7 @@ class MyAttributeDialog(wx.Dialog):
         title  = wx.StaticText(self, -1, "Title:")
         xlabel = wx.StaticText(self, -1, "X label:")
         ylabel = wx.StaticText(self, -1, "Y label:")
+        aspect = wx.StaticText(self, -1, "Aspect:")
         xmin   = wx.StaticText(self, -1, "X min:")
         ymin   = wx.StaticText(self, -1, "Y min:")
         xmax   = wx.StaticText(self, -1, "X max:")
@@ -972,6 +996,7 @@ class MyAttributeDialog(wx.Dialog):
         t = self.mainparent.plot_title
         xl = self.mainparent.plot_xlabel
         yl = self.mainparent.plot_ylabel
+        asp = str(self.mainparent.plot_aspect_ratio)
         if (self.mainparent.plot_1D_data):
             xm = str(self.mainparent.plot_xmino)
             ym = str(self.mainparent.plot_ymino)
@@ -996,13 +1021,14 @@ class MyAttributeDialog(wx.Dialog):
         self.tc   = wx.TextCtrl(self, 1, t)
         self.xlc  = wx.TextCtrl(self, 2, xl)
         self.ylc  = wx.TextCtrl(self, 3, yl)
-        self.xmc  = wx.TextCtrl(self, 4, xm)
-        self.ymc  = wx.TextCtrl(self, 5, ym)
-        self.xMc  = wx.TextCtrl(self, 6, xM)
-        self.yMc  = wx.TextCtrl(self, 7, yM)
-        self.cbmc = wx.TextCtrl(self, 8, cbm)
-        self.cbMc = wx.TextCtrl(self, 9, cbM)
-        self.cbtc = wx.TextCtrl(self, 10,cbt)
+        self.aspc = wx.TextCtrl(self, 4, asp)
+        self.xmc  = wx.TextCtrl(self, 5, xm)
+        self.ymc  = wx.TextCtrl(self, 6, ym)
+        self.xMc  = wx.TextCtrl(self, 7, xM)
+        self.yMc  = wx.TextCtrl(self, 8, yM)
+        self.cbmc = wx.TextCtrl(self, 9, cbm)
+        self.cbMc = wx.TextCtrl(self, 10,cbM)
+        self.cbtc = wx.TextCtrl(self, 11,cbt)
 
         ok = wx.Button(self, wx.ID_OK, 'OK')
         cancel = wx.Button(self, wx.ID_CANCEL, 'Cancel')
@@ -1012,6 +1038,7 @@ class MyAttributeDialog(wx.Dialog):
         titles = wx.BoxSizer(wx.HORIZONTAL)
         xlabels = wx.BoxSizer(wx.HORIZONTAL)
         ylabels = wx.BoxSizer(wx.HORIZONTAL)
+        aspects = wx.BoxSizer(wx.HORIZONTAL)
         xminbox = wx.BoxSizer(wx.HORIZONTAL)
         yminbox = wx.BoxSizer(wx.HORIZONTAL)
         xmaxbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -1031,6 +1058,8 @@ class MyAttributeDialog(wx.Dialog):
         xlabels.Add(self.xlc, 1, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         ylabels.Add(ylabel, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         ylabels.Add(self.ylc, 1, wx.EXPAND|wx.ALL|wx.GROW, border=5)
+        aspects.Add(aspect, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
+        aspects.Add(self.aspc, 1, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         xminbox.Add(xmin, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         xminbox.Add(self.xmc, 1, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         yminbox.Add(ymin, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
@@ -1063,6 +1092,7 @@ class MyAttributeDialog(wx.Dialog):
         hbox.Add(titles, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         hbox.Add(xlabels, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         hbox.Add(ylabels, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
+        hbox.Add(aspects, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         hbox.Add(range, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         hbox.Add(ctitles, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         hbox.Add(crange, 0, wx.EXPAND|wx.ALL|wx.GROW, border=5)
@@ -1093,6 +1123,15 @@ class MyAttributeDialog(wx.Dialog):
         ymVal = str(self.ymc.GetValue())
         xMVal = str(self.xMc.GetValue())
         yMVal = str(self.yMc.GetValue())
+        aspect_val = str(self.aspc.GetValue())
+
+        # set aspect ratio
+        try:
+            aspc = float(aspect_val)
+        except ValueError:
+            aspc = str(aspect_val)
+
+        self.mainparent.plot_aspect_ratio = aspc
 
         # did the vmin/vmax values change?
         if (self.cbmc.IsModified()):
