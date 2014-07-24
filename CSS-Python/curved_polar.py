@@ -17,13 +17,14 @@ from matplotlib import rc
 #####################################################################
 # plot polar 2D colormap
 #####################################################################
-def polar_image(data, r, costheta, sintheta, r_bcz=[], equator=True,
-                vmin=None, vmax=None, cont=False, cmap=None, cbar=True,
-                add_cont=True, add_data=None, extent=None, cb_title=''):
+def polar_image(data, r, theta, radians=True, r_bcz=[], equator=True, 
+           vmin=None, vmax=None, cont=False, cmap=None, cbar=True, 
+           aspect=1, add_cont=True, add_data=None, extent=None, cb_title=''):
 
     # data               : 2D array of size (ntheta, nradius)
     # r                  : radius data
-    # costheta, sintheta : cos(theta) & sin(theta)
+    # theta              : theta data
+    # radians            : is theta in radians
     # equator            : plot dotted line at equator
     # r_bcz              : add horizontal line(s) at this position
     # vmin, vmax         : min, max colorbar values
@@ -34,6 +35,12 @@ def polar_image(data, r, costheta, sintheta, r_bcz=[], equator=True,
     # add_data           : extra data for contour drawing
     # extent             : (rmin, rmax, theta_min, theta_max)
     # cb_title           : title for colorbar
+
+    if (not radians):
+        theta = theta * numpy.pi / 180.
+
+    costheta = numpy.cos(theta)
+    sintheta = numpy.sin(theta)
 
     # set defaults
     if (vmin == None):
@@ -66,8 +73,11 @@ def polar_image(data, r, costheta, sintheta, r_bcz=[], equator=True,
         pylab.plot([r[0],r[-1]], [0,0], 'k--')
 
     # turn off background cartesian axis & set pcolormesh limits
-    pylab.axis('off')
+    # and set aspect ratio
+    pylab.axes().set_aspect(aspect)
     pylab.clim(vmin, vmax)
+    pylab.axis('off')
+
 
     # define the corners of the image
     # left boundaries
@@ -86,13 +96,18 @@ def polar_image(data, r, costheta, sintheta, r_bcz=[], equator=True,
         xmax = numpy.amax(r[-1]*sintheta)
         ymin = min(yleftb, yrightb)
         ymax = max(yleftt, yrightt)
-        pylab.xlim(xmin, xmax)
-        pylab.ylim(ymin, ymax)
+        pylab.xlim(1.3*xmin, 1.3*xmax)
+        pylab.ylim(1.3*ymin, 1.3*ymax)
+        print xmin, xmax, ymin, ymax
     else:
         pylab.xlim(extent[0], extent[1])
-        pylab.ylim(extent[2], extent[3])
+        if (extent[2] > extent[3]):
+            pylab.ylim(extent[3], extent[2])
+            print extent[0],extent[1],extent[3],extent[2]
+        else:
+            pylab.ylim(extent[2], extent[3])
+            print extent[0],extent[1],extent[2],extent[3]
 
-    print xmin, xmax, ymin, ymax
     # plot boundaries
     pylab.plot(r[0]*sintheta, r[0]*costheta, 'k') # inner
     pylab.plot(r[-1]*sintheta, r[-1]*costheta, 'k') # outer

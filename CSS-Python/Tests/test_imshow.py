@@ -11,16 +11,18 @@ test = 2
 
 r = numpy.arange(6.e10,7.e10,0.01e10)
 theta = numpy.arange(80., 100., 0.1)
+theta = theta*numpy.pi/180.
 
 a = numpy.zeros((len(theta), len(r)))
 for i in range(len(theta)):
-    th = theta[i]*numpy.pi/180.
+    th = theta[i]
     for j in range(len(r)):
         rad = r[j]
         a[i,j] = rad*numpy.sin(th)
 
+pylab.figure(figsize=(7,7), dpi=100)
+
 if test==1:
-    pylab.figure()
     im = pylab.imshow(a, aspect='auto', cmap=pylab.get_cmap("jet"), 
                       origin="upper", extent=(numpy.amin(r), numpy.amax(r), 
                       numpy.amax(theta), numpy.amin(theta)))
@@ -28,13 +30,14 @@ if test==1:
     pylab.ylabel("jet", rotation=90)
     pylab.show()
 elif test==2:
-    theta = theta*numpy.pi/180.
     #myim.image_polar(a, r, numpy.cos(theta), numpy.sin(theta), 
                             #r_bcz=[0.98], cont=True, cbar=True, add_c=False,
                             #tit='Hi', mini=6.2e10, maxi=6.8e10)
-    my_im.polar_image(a, r, numpy.cos(theta), numpy.sin(theta), 
+    #asp = 0.75
+    asp = 'auto'
+    my_im.polar_image(a, r, theta, 
                  r_bcz=[6.75e10,6.85e10], equator=True, vmin=None, vmax=None,
                  cont=True, cmap=pylab.get_cmap("jet"), cbar=True, 
-                 add_cont=False, add_data=None, cb_title="Hi")
+                 add_cont=False, add_data=None, cb_title="Hi", aspect=asp)
     pylab.title("Hello")
     pylab.show()

@@ -25,6 +25,3 @@ fact_x = 4./3.
 pos_fact_x = 0.045
 pos_fact_y = 0.05
 
-# maximum radius
-rsol = 6.96e10
-
