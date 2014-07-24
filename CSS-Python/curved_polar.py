@@ -96,8 +96,8 @@ def polar_image(data, r, theta, radians=True, r_bcz=[], equator=True,
         xmax = numpy.amax(r[-1]*sintheta)
         ymin = min(yleftb, yrightb)
         ymax = max(yleftt, yrightt)
-        pylab.xlim(1.3*xmin, 1.3*xmax)
-        pylab.ylim(1.3*ymin, 1.3*ymax)
+        pylab.xlim(xmin, xmax)
+        pylab.ylim(ymin, ymax)
         print xmin, xmax, ymin, ymax
     else:
         pylab.xlim(extent[0], extent[1])
