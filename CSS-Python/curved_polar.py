@@ -98,15 +98,12 @@ def polar_image(data, r, theta, radians=True, r_bcz=[], equator=True,
         ymax = max(yleftt, yrightt)
         pylab.xlim(xmin, xmax)
         pylab.ylim(ymin, ymax)
-        print xmin, xmax, ymin, ymax
     else:
         pylab.xlim(extent[0], extent[1])
         if (extent[2] > extent[3]):
             pylab.ylim(extent[3], extent[2])
-            print extent[0],extent[1],extent[3],extent[2]
         else:
             pylab.ylim(extent[2], extent[3])
-            print extent[0],extent[1],extent[2],extent[3]
 
     # plot boundaries
     pylab.plot(r[0]*sintheta, r[0]*costheta, 'k') # inner
