@@ -884,7 +884,8 @@ class plotpanel(wx.Panel):
                 extent = (xminc, xmaxc, yminc, ymaxc)
 
                 # FIXME: implement working version of curved plots
-                if (True):
+                if (False):
+                    # Original code: plot data on 2D cartesian plane
                     cax = self.axes.imshow(data, interpolation='quadric', 
                                            cmap=cm, extent=extent, 
                                            origin='upper', vmin=vmin, 
@@ -894,28 +895,62 @@ class plotpanel(wx.Panel):
                     cb.set_clim(vmin, vmax)
                     cb.set_label(cb_title)
 
+                    # title, labels
+                    self.axes.set_title(title)
+                    self.axes.set_xlabel(xlabel)
+                    self.axes.set_ylabel(ylabel)
+
+                    # range
+                    self.axes.set_xlim(xminc, xmaxc)
+                    self.axes.set_ylim(yminc, ymaxc)
+
                 # EXPERIMENTAL: curved plots
                 else:
-                    data2 = numpy.zeros((len(theta), len(radius)))
-                    for i in range(len(theta)):
-                        th=theta[i]
-                        for j in range(len(radius)):
-                            rad=radius[j]
-                            data2[i,j] = rad*numpy.sin(th)
-                    curved_polar.polar_image(data2, radius, theta, 
-                                       radians=False, vmin=vmin, vmax=vmax,
-                                       cmap=cm, aspect=aspect, add_cont=False,
-                                       extent=None, cb_title=cb_title, 
+                    test_curved = True
+
+                    #data2 = numpy.zeros((len(theta), len(radius)))
+                    #for i in range(len(theta)):
+                    #    th=theta[i]
+                    #    for j in range(len(radius)):
+                    #        rad=radius[j]
+                    #        data2[i,j] = rad*numpy.sin(th)
+                    #vmin = numpy.amin(data2)
+                    #vmax = numpy.amax(data2)
+                    if (test_curved):
+                        # correct for data2(i,j) = r_j*sin(th_i)
+                        curved_polar.polar_image(data, radius, theta, 
+                                       radians=False, equator=True, 
+                                       vmin=vmin, vmax=vmax, cont=False,
+                                       cmap=cm, cbar=True, 
+                                       aspect=aspect, add_cont=False,
+                                       add_data=None, extent=None, 
+                                       cb_title=cb_title, 
                                        r_bcz=[0.95*constants.rsol])
 
-                # title, labels
-                self.axes.set_title(title)
-                self.axes.set_xlabel(xlabel)
-                self.axes.set_ylabel(ylabel)
+                    else:
+                        # correct for data2(i,j) = r_j*sin(th_i)
+                        cax = self.axes.imshow(data2, interpolation='quadric', 
+                                           cmap=cm, extent=extent, 
+                                           origin='upper', vmin=vmin, 
+                                           vmax=vmax, aspect='auto')
 
-                # range
-                self.axes.set_xlim(xminc, xmaxc)
-                self.axes.set_ylim(yminc, ymaxc)
+                        cb = self.figure.colorbar(cax)
+                        cb.set_clim(vmin, vmax)
+                        cb.set_label(cb_title)
+
+                    # title, labels
+                    self.axes.set_title(title)
+                    self.axes.set_xlabel(xlabel)
+                    self.axes.set_ylabel(ylabel)
+
+                    # range
+                    # if specified, ylimits must have units of radii
+                    # i.e. ylim = (rmax*cos(theta_max), rmax*cos(theta_min))
+                    ###self.axes.set_xlim(6.1e10, 6.97e10)
+                    ###self.axes.set_ylim(6.97e10*numpy.cos(numpy.pi*80/180.), 
+                    ###                   6.97e10*numpy.cos(numpy.pi*100/180.))
+                    #self.axes.set_xlim(xminc, xmaxc)
+                    #self.axes.set_ylim(yminc, ymaxc)
 
             else:
 
