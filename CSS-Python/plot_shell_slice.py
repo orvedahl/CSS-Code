@@ -221,7 +221,7 @@ class window(wx.Frame):
         self.mainmenuBar = wx.MenuBar()
 
         fileMenu = wx.Menu()
-        fileMenu.Append(-10, '&Load File(s)')
+        fileMenu.Append(-10, '&Load File')
         fileMenu.Append(-20, '&Plot Data')
         fileMenu.Append(-30, '&Clear Plot')
 
@@ -291,7 +291,7 @@ class buttonpanel(wx.Panel):
 
         # setup a few buttons
         #--------------------------------------------------------------
-        self.Lfile = wx.Button(self, -1, "Load File(s)")
+        self.Lfile = wx.Button(self, -1, "Load File")
         self.Lfile.Bind(wx.EVT_BUTTON, self.Load)
         self.sizer.Add(self.Lfile, 1, wx.EXPAND|wx.ALL|wx.GROW, border=5)
         #--------------------------------------------------------------
