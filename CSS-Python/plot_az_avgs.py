@@ -883,7 +883,7 @@ class plotpanel(wx.Panel):
             if (not plot_1D):
                 extent = (xminc, xmaxc, yminc, ymaxc)
 
-                # FIXME: implement working version of curved plots
+                # FIXME: improve the current version of curved plots
                 if (False):
                     # Original code: plot data on 2D cartesian plane
                     cax = self.axes.imshow(data, interpolation='quadric', 
@@ -906,42 +906,24 @@ class plotpanel(wx.Panel):
 
                 # EXPERIMENTAL: curved plots
                 else:
-                    test_curved = True
+                    curved_polar.polar_image(data, radius, theta, 
+                                   radians=False, equator=True, 
+                                   vmin=vmin, vmax=vmax, cont=False,
+                                   cmap=cm, cbar=True, 
+                                   aspect=aspect, add_cont=False,
+                                   add_data=None, extent=None, 
+                                   cb_title=cb_title, 
+                                   r_bcz=[0.95*constants.rsol])
 
-                    #data2 = numpy.zeros((len(theta), len(radius)))
-                    #for i in range(len(theta)):
-                    #    th=theta[i]
-                    #    for j in range(len(radius)):
-                    #        rad=radius[j]
-                    #        data2[i,j] = rad*numpy.sin(th)
-                    #vmin = numpy.amin(data2)
-                    #vmax = numpy.amax(data2)
-                    if (test_curved):
-                        # correct for data2(i,j) = r_j*sin(th_i)
-                        curved_polar.polar_image(data, radius, theta, 
-                                       radians=False, equator=True, 
-                                       vmin=vmin, vmax=vmax, cont=False,
-                                       cmap=cm, cbar=True, 
-                                       aspect=aspect, add_cont=False,
-                                       add_data=None, extent=None, 
-                                       cb_title=cb_title, 
-                                       r_bcz=[0.95*constants.rsol])
-
-                    else:
-                        # correct for data2(i,j) = r_j*sin(th_i)
-                        cax = self.axes.imshow(data2, interpolation='quadric', 
-                                           cmap=cm, extent=extent, 
-                                           origin='upper', vmin=vmin, 
-                                           vmax=vmax, aspect='auto')
-
-                        cb = self.figure.colorbar(cax)
-                        cb.set_clim(vmin, vmax)
-                        cb.set_label(cb_title)
-
+                    ########################################################
+                    # to plot on curved plane, axes are turned off in 
+                    # polar_image routine, so setting them (labels, limits) 
+                    # here makes no difference. title seems to work...
+                    ########################################################
                     # title, labels
                     self.axes.set_title(title)
-                    self.axes.set_xlabel(xlabel)
-                    self.axes.set_ylabel(ylabel)
+                    #self.axes.set_xlabel(xlabel)
+                    #self.axes.set_ylabel(ylabel)
 
                     # range
                     # if specified, ylimits must have units of radii
