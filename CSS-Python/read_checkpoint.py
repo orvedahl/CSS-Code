@@ -14,8 +14,10 @@ import unformatted_read
 
 #####################################################################
 # read Checkpoint files
+#      mag_curl      only return B field data
+#      vel_curl      only return velocity data
 #####################################################################
-def read_checkpoint(iter, case):
+def read_checkpoint(iter, case, mag_curl=False, vel_curl=False):
 
     ierr = False
 
@@ -63,13 +65,23 @@ def read_checkpoint(iter, case):
 
     # construct each checkpoint.x filename
     prefix =read_dir+"checkpoint."
-    names = ["rho", "w", "v", "u", "s", "bt", "bp", "br"]
+    if (mag_curl):
+        names = ["bt", "bp", "br"]
+    elif (vel_curl):
+        names = ["w", "v", "u"]
+    else:
+        names = ["rho", "w", "v", "u", "s", "bt", "bp", "br"]
+
     files = []
     for n in names:
         files.append(prefix+n)
 
     # loop over each filename and add the data
+    if (mag_curl or vel_curl):
+        nq = 3
+
     data = numpy.empty((nth, nph, nr, nq))
+
     for iv in range(nq):
 
         t_data, err = unformatted_read.read_f90(files[iv])
@@ -89,11 +101,11 @@ def read_checkpoint(iter, case):
         theta = (th2-th1)*numpy.array(range(nth))/float(nth-1) + th1
         phi = (ph2-ph1)*numpy.array(range(nph))/float(nph-1) + ph1
 
-        return data, rad, theta, phi, time, ierr
+        return data, rad, theta, phi, time, fname, ierr
 
     else:
 
-        return None, None, None, None, None, ierr
+        return None, None, None, None, None, None, ierr
 
 
 #####################################################################
