@@ -8,12 +8,12 @@
 import numpy
 import vectorcurl
 
-def rossby_from_chk(iter, case, omega):
+def rossby_from_chk(iter, case, omega0):
 
     # get curl
     curl, rad, theta, phi = vectorcurl.vectorcurl(iter, case)
 
-    # get magnitude of curl
+    # get magnitude of curl --> sqrt(enstrophy)
     ens = numpy.sqrt(curl[:,:,:,0]*curl[:,:,:,0] +
                      curl[:,:,:,1]*curl[:,:,:,1] +
                      curl[:,:,:,2]*curl[:,:,:,2])
@@ -23,10 +23,8 @@ def rossby_from_chk(iter, case, omega):
     for ir in range(nr):
         rossby[ir] = numpy.average(ens[:,:,ir])
 
-    if (type(omega) == float):
-        rossby[:] = rossby[:]/omega
-    else:
-        rossby[:] = rossby[:]/omega[:]
+    # divide by rotation rate of the frame
+    rossby[:] = rossby[:]/omega0
 
     return rossby
 
