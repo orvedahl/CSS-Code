@@ -636,7 +636,11 @@ class buttonpanel(wx.Panel):
 
             self.mainparent.current_rad = i
 
-            self.mainparent.plot_save_output = output_base + str(i) + ".png"
+            if (defaults.eps):
+                suffix = '.eps'
+            else:
+                suffix = '.png'
+            self.mainparent.plot_save_output = output_base + str(i) + suffix
 
             self.mainparent.plotpane.plot()
 
@@ -796,7 +800,7 @@ class plotpanel(wx.Panel):
 
         self.mainparent = self.GetParent().GetParent()
 
-        self.mydpi = 100
+        self.mydpi = defaults.dpi
         self.fact = 1.0 #0.95
 
         self.xs = xs
@@ -971,7 +975,11 @@ class plotpanel(wx.Panel):
                 self.figure.canvas.draw()
             else:
                 self.figure.canvas.draw()
-                plt.savefig(self.mainparent.plot_save_output)
+                if (defaults.eps):
+                    fmt = 'eps'
+                else:
+                    fmt = 'png'
+                plt.savefig(self.mainparent.plot_save_output, format=fmt)
                 print "\tSaved frame: "+self.mainparent.plot_save_output
 
             self.mainparent.statusbar.SetStatusText("Plotting ... Complete", 0)

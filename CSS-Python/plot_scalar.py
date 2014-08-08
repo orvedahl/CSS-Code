@@ -121,9 +121,11 @@ def plot_scalar(css_case, eps=False, dir=None, isi=None, ie=None, log=None,
         output = "scalar"
         if (eps):
             output += ".eps"
+            fmt = 'eps'
         else:
             output += ".png"
-        pylab.savefig(output, pad_inches=0.33)
+            fmt = 'png'
+        pylab.savefig(output, pad_inches=0.33, format=fmt)
         print "\tSaved Image: "+output
 
     return
