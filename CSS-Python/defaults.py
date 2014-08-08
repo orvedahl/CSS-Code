@@ -9,6 +9,12 @@ dir = "/home8/ryor5023/Programs/CSS_Code/Runs/"
 # default matplotlib colormap to use (can be changed from gui)
 cmap = "jet"
 
+# plot dots per inch
+dpi = 100
+
+# when saving images, use EPS format
+eps = False
+
 # initial application window size:
 #    ys = fact_y * y_screen_size
 #    xs = fact_x * ys

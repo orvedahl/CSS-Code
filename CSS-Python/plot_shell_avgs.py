@@ -715,7 +715,7 @@ class plotpanel(wx.Panel):
 
         self.mainparent = self.GetParent().GetParent()
 
-        self.mydpi = 100
+        self.mydpi = defaults.dpi
         self.fact = 1.0 #0.95
 
         self.xs = xs
