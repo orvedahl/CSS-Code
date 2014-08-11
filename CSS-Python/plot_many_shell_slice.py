@@ -13,12 +13,23 @@ import pylab
 from read_shell_slice import *
 
 def plot_many_shell_slice(variable, base, eps, dpi, vmin, vmax, filelist, 
-                          nrad, show_labels, show_cbar):
+                          nrad, show_labels, show_cbar, from_file):
+
 
     if (len(filelist) < 1):
         print "\n---ERROR: must specify files---\n"
         print usage()
         sys.exit(2)
+
+    # read files from file
+    if (from_file):
+        file = filelist[0]
+        filelist = []
+        mf = open(file, 'r')
+        for line in mf:
+            fil = line.replace("\n", "")
+            filelist.append(fil)
+        mf.close()
 
     # set title, labels, ranges, colormaps, etc
     title = "Shell Slice of "+variable
@@ -83,6 +94,13 @@ def plot_many_shell_slice(variable, base, eps, dpi, vmin, vmax, filelist,
     mint = 1.e30
     maxt = -1.e30
 
+    get_vmin = False
+    get_vmax = False
+    if (vmin == None):
+        get_vmin = True
+    if (vmax == None):
+        get_vmax = True
+
     # loop over files
     i = 0
     for fil in filelist:
@@ -98,9 +116,9 @@ def plot_many_shell_slice(variable, base, eps, dpi, vmin, vmax, filelist,
 
             extent = (pmin, pmax, tmin, tmax)
 
-            if (vmin == None):
+            if (get_vmin):
                 vmin = numpy.amin(data)
-            if (vmax == None):
+            if (get_vmax):
                 vmax = numpy.amax(data)
 
             pylab.clf()
@@ -126,10 +144,12 @@ def plot_many_shell_slice(variable, base, eps, dpi, vmin, vmax, filelist,
             i += 1
 
             # find min vmin and max vmax over all files
-            if (vmin < mint):
-                mint = vmin
-            if (vmax > maxt):
-                maxt = vmax
+            vmint = numpy.amin(data)
+            vmaxt = numpy.amax(data)
+            if (vmint < mint):
+                mint = vmint
+            if (vmaxt > maxt):
+                maxt = vmaxt
 
         else:
             print "\n---WARNING: read failed: "+fil
@@ -157,6 +177,8 @@ def usage():
     print "\t--vmax=<vmax>           Set max colorbar value for all images\n"
     print "\t--no-show-labels        Do not display the titles and xy labels\n"
     print "\t--no-show-cbar          Do not display the colorbar\n"
+    print "\t--from-file             Read filenames from single file given in"
+    print "\t                            <list of files>\n"
     print "\t-h, --help              Display help message\n"
 
 
@@ -166,7 +188,8 @@ if __name__=="__main__":
        opts, args = getopt.getopt(sys.argv[1:], "hv:o:ed:r:", 
                                   ["var=", "output=", "eps", "dpi=",
                                    "rad-index=", "vmin=", "vmax=", 
-                                   "no-show-labels", "no-show-cbar", "help"])
+                                   "no-show-labels", "no-show-cbar", 
+                                   "from-file", "help"])
 
     except getopt.GetoptError:
        print "\n---ERROR: Unknown Command Line Option---\n"
@@ -183,6 +206,7 @@ if __name__=="__main__":
     vmax = None
     show_cbar = True
     show_labels = True
+    from_file = False
 
     # parse options
     for opt, arg in opts:
@@ -208,10 +232,12 @@ if __name__=="__main__":
             show_cbar = False
         elif opt in ("--no-show-labels"):
             show_labels = False
+        elif opt in ("--from-file"):
+            from_file = True
 
     filelist = args[:]
 
     plot_many_shell_slice(variable, base, eps, dpi, vmin, vmax, filelist, 
-                          nrad, show_labels, show_cbar)
+                          nrad, show_labels, show_cbar, from_file)
 
 
