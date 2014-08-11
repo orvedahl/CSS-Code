@@ -155,6 +155,14 @@ def plot_many_shell_slice(variable, base, eps, dpi, vmin, vmax, filelist,
             print "\n---WARNING: read failed: "+fil
             continue
 
+        # free the memory
+        data = None
+        theta = None
+        phi = None
+        radii = None
+        quants = None
+        quant_names = None
+
     print "\nAbsolute minimum colorbar: "+str(mint)
     print "Absolute maximum colorbar: "+str(maxt)
 
