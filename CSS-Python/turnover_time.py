@@ -23,6 +23,13 @@ def turnover_time(iter, case):
     #            V_rms_up = RMS of radial velocity in upward direction
     #            V_rms_down = RMS of radial velocity in downward direction
 
+    # option 3:
+    #                   r2
+    #          tau = int   1./ vr * dr ~= (r2-r1)/vr[nr/2]
+    #                   r1
+    #           do integration using midpoint rule (vr[nr/2])
+    #           trap rule has issues with divide by 0
+
     # extract Vr from data, it is stored in checkpoint.u
     data, radius, theta, phi, time, header, ierr = read_checkpoint(\
                                                    iter, case, vel_curl=True)
@@ -58,6 +65,11 @@ def turnover_time(iter, case):
 
     tau_1 = 2. * radial_domain / vr_rms
 
+    print "\nOption 1:"
+    print "\tuse RMS"
+    print "\tTau (sec) : "+str(tau_1)
+    print "\tTau (days): "+str(tau_1/86400.)
+
     if (len(vr_up) == 0):
         tau_2 = 2. * radial_domain / vr_rms_d
     elif (len(vr_down) == 0):
@@ -65,15 +77,18 @@ def turnover_time(iter, case):
     else:
         tau_2 = radial_domain * ( 1./vr_rms_u + 1./vr_rms_d )
 
-    print "\nOption 1:"
-    print "\tuse RMS"
-    print "\tTau (sec) : "+str(tau_1)
-    print "\tTau (days): "+str(tau_1/86400.)
-
     print "\nOption 2:"
     print "\tuse +/- RMS"
     print "\tTau (sec) : "+str(tau_2)
     print "\tTau (days): "+str(tau_2/86400.)
+
+    # midpoint rule (trap rule has issues with 1/0)
+    tau_3 = radial_domain * abs(1./vr[nr/2])
+
+    print "\nOption 3:"
+    print "\tuse integral"
+    print "\tTau (sec) : "+str(tau_3)
+    print "\tTau (days): "+str(tau_3/86400.)
     print
 
 
