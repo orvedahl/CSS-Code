@@ -49,7 +49,22 @@ def turnover_time(iter, case):
     # calculate the RMS velocity
     vr_rms = rms(vr)
 
+    # find up-flows and down-flows
+    vr_up   = vr[vr > 0]
+    vr_down = vr[vr < 0] 
+
+    vr_rms_u = rms(vr_up)
+    vr_rms_d = rms(vr_down)
+
     tau_1 = 2. * radial_domain / vr_rms
+
+    if (len(vr_up) == 0):
+        tau_2 = 2. * radial_domain / vr_rms_d
+    elif (len(vr_down) == 0):
+        tau_2 = 2. * radial_domain / vr_rms_u
+    else:
+        tau_2 = radial_domain * ( 1./vr_rms_u + 1./vr_rms_d )
+
     print "\nOption 1:"
     print "\tuse RMS"
     print "\tTau (sec) : "+str(tau_1)
@@ -57,8 +72,9 @@ def turnover_time(iter, case):
 
     print "\nOption 2:"
     print "\tuse +/- RMS"
-    print "\tTau (sec) : "+str(tau_1)
-    print "\tTau (days): "+str(tau_1/86400.)
+    print "\tTau (sec) : "+str(tau_2)
+    print "\tTau (days): "+str(tau_2/86400.)
+    print
 
 
 def rms(x, axis=None):
