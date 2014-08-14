@@ -39,11 +39,14 @@ def plot_scalar(css_case, eps=False, dir=None, isi=None, ie=None, log=None,
     # the extra "+1" is to make isi:ie inclusive
     times = data[isi:ie+1,0]
     dt    = data[isi:ie+1,1]
-    ke    = data[isi:ie+1,2]
-    cke   = data[isi:ie+1,3]
-    mcke  = data[isi:ie+1,4]
-    drke  = data[isi:ie+1,5]
-    mach  = data[isi:ie+1,6]
+    ke    = data[isi:ie+1,2] # total kinetic energy
+    cke   = data[isi:ie+1,3] # convective kinetic energy
+    mcke  = data[isi:ie+1,4] # meridional circulation kinetic energy
+    drke  = data[isi:ie+1,5] # differential rotation kinetic energy
+    mach  = data[isi:ie+1,6] # "mach" number:
+                             #    M = sqrt(maxval(usqr/(usqr+temperature)))
+                             #    usqr = flow speed squared
+                             #    temperature = temperature
     if (mag != None):
         me   = data[isi:ie+1,7]
         bmax = data[isi:ie+1,8]
