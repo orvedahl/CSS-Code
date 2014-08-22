@@ -135,6 +135,17 @@ def turnover_time(iter, case):
     print "\tTau (days): "+str(tau_6/86400.)
     print
 
+    pylab.clf()
+    pylab.plot([rlow,rlow],[numpy.amin(vr),numpy.amax(vr)], 'k--')
+    pylab.plot([rhi,rhi],[numpy.amin(vr),numpy.amax(vr)], 'k--')
+    pylab.plot(radius, vr, label='vr')
+    pylab.plot(radius, -numpy.amax(abs(vr))*numpy.ones(nr), label='max vr')
+    pylab.plot(radius, -vr_rms*numpy.ones(nr), label='rms')
+    pylab.plot(radius, -vr_restrict_rms*numpy.ones(nr), label='rest. rms')
+    pylab.xlabel('radius')
+    pylab.ylabel('velocity')
+    pylab.legend()
+    pylab.show()
 
 def integrate(vr, rad, method='simp'):
 
