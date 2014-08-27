@@ -115,8 +115,8 @@ def curved_image(data, phi, theta, radians=True, grid=True, vmin=None,
     if (grid):
         dlon = (lonmax-lonmin)/(nlon+1)
         dlat = (latmax-latmin)/(nlat+1)
-        parallels = numpy.arange(lonmin, lonmax+dlon, dlon)
-        meridians = numpy.arange(latmin, latmax+dlat, dlat)
+        parallels = numpy.arange(latmin, latmax+dlon, dlon)
+        meridians = numpy.arange(lonmin, lonmax+dlat, dlat)
         col = "0.1"
         ls = ":"
         for par in parallels:
