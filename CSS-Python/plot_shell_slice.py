@@ -25,6 +25,7 @@ from read_shell_slice import *
 import defaults
 import constants
 import derivatives
+from curved_shell import *
 #--------------------------------------------------------------------
 
 
@@ -413,8 +414,8 @@ class buttonpanel(wx.Panel):
                 self.mainparent.plot_xmax = pmax*180./numpy.pi
                 # theta is standard spherical theta so when plotting,
                 # lower theta is closer to top and larger theta is at bottom
-                self.mainparent.plot_ymin = thmax*180./numpy.pi
-                self.mainparent.plot_ymax = thmin*180./numpy.pi
+                self.mainparent.plot_ymin = 90. - thmax*180./numpy.pi
+                self.mainparent.plot_ymax = 90. - thmin*180./numpy.pi
 
                 iq_init = 0
                 nrad_init = nradii - 1
@@ -952,23 +953,38 @@ class plotpanel(wx.Panel):
             self.mainparent.slider_min = float(smin)
             self.mainparent.slider_max = float(smax)
 
-            extent = (xmin, xmax, ymin, ymax)
-            cax = self.axes.imshow(data, interpolation='quadric', cmap=cm,
-                                   extent=extent, origin='upper', 
-                                   vmin=vmin, vmax=vmax, aspect='auto')
+            # FIXME: improve the current version of curved shells
+            if (False):
+                extent = (xmin, xmax, ymin, ymax)
+                cax = self.axes.imshow(data, interpolation='quadric', cmap=cm,
+                                       extent=extent, origin='upper', 
+                                       vmin=vmin, vmax=vmax, aspect='auto')
 
-            cb = self.figure.colorbar(cax)
-            cb.set_clim(vmin, vmax)
-            cb.set_label(cb_title)
+                cb = self.figure.colorbar(cax)
+                cb.set_clim(vmin, vmax)
+                cb.set_label(cb_title)
 
-            # title, labels
-            self.axes.set_title(title)
-            self.axes.set_xlabel(xlabel)
-            self.axes.set_ylabel(ylabel)
+                # title, labels
+                self.axes.set_title(title)
+                self.axes.set_xlabel(xlabel)
+                self.axes.set_ylabel(ylabel)
 
-            # range
-            self.axes.set_xlim(xmin, xmax)
-            self.axes.set_ylim(ymin, ymax)
+                # range
+                self.axes.set_xlim(xmin, xmax)
+                self.axes.set_ylim(ymin, ymax)
+
+            else:
+                extent = [xmin, xmax, ymin, ymax]
+
+                # theta was already converted to degrees
+                lat0 = 90.0 - 0.5*(theta[0] + theta[-1])
+                lon0 = 0.5*(phi[0] + phi[-1])*180./numpy.pi
+                phi = phi*180./numpy.pi
+                curved_image(data, phi, theta, radians=False, grid=True,
+                             vmin=vmin, vmax=vmax, cmap=cm, cbar=True,
+                             cb_title=cb_title, title=title, xlabel=xlabel,
+                             ylabel=ylabel, lat_0=lat0, lon_0=lon0,
+                             proj='ortho')
 
             # display proper figure
             if (not self.mainparent.plot_save_figure):
