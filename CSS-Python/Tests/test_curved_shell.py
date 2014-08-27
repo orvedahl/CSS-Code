@@ -25,7 +25,7 @@ if (not err):
            plot_original = True
 
 if small:
-   phi_d   = numpy.arange(-10, 10.+0.1, 0.1)
+   phi_d   = numpy.arange(0., 20.+0.1, 0.1)
    theta_d = numpy.arange(80., 100.+0.1, 0.1)
 else:
    phi_d   = numpy.arange(-40, 40.+0.5, 0.5)
