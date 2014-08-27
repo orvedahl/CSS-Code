@@ -8,10 +8,7 @@
 
 import numpy
 import pylab
-#from convert_from_lat_lon import *
 from mpl_toolkits.basemap import Basemap
-
-# CURRENT pyASH VERSION USES mpl_toolkits.basemap.Basemap
 
 #####################################################################
 # plot curved 2D colormap
