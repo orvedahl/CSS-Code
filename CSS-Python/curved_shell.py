@@ -107,8 +107,7 @@ def curved_image(data, phi, theta, radians=True, grid=True, vmin=None,
     # MAP.pcolormesh:
     # if data is data(x,y) then calling sequence is:
     #       pcolormesh(x, y, data, ...)
-    im = map.pcolormesh(x, y, data, cmap=cmap, latlon=True, 
-                        vmin=vmin, vmax=vmax)
+    im = map.pcolormesh(x, y, data, cmap=cmap, vmin=vmin, vmax=vmax)
     #map.drawmapboundary()
 
     # plotting grid lines
