@@ -41,8 +41,8 @@ def turnover_time(iter, case):
         print "\theader file: "+header+"\n"
         sys.exit(2)
 
-    # data is size (nth, nphi, nr, 3) where last indices are w(0), v(1), u(0)
-    # with w being theta, v being phi and u being radial velocities
+    # data is size (nth, nphi, nr, 3) where last indices are w(0), v(1), u(2)
+    # with w being phi, v being theta and u being radial velocities
     full_vr = data[:,:,:,2]
 
     # size of domain

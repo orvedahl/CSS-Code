@@ -13,7 +13,7 @@ import numpy
 from rossby_from_checkpoint import *
 
 
-def plot_rossby(iter, case, omega0, eps, dpi, show, output, tex):
+def plot_rossby(iter, case, omega0, eps, dpi, show, output, tex, method):
 
     if (tex):
         matplotlib.rc('text', usetex=True)
@@ -23,7 +23,8 @@ def plot_rossby(iter, case, omega0, eps, dpi, show, output, tex):
         title = r"Rossby Number vs Radius, Omega_0 = %.3e" % (omega0)
 
     # get rossby number
-    rossby, radius = rossby_from_chk(iter, case, omega0, return_rad=True)
+    rossby, radius = rossby_from_chk(iter, case, omega0, method=method, 
+                                       return_rad=True)
 
     # plot it
     pylab.clf()
@@ -74,6 +75,7 @@ def usage():
     print "\t                           checkpoint file to use\n"
     print "\t-c <c>, --case=<c>      Which run to use\n"
     print "\t--omega=<omega0>        Specify rotation rate\n"
+    print "\t--method=<m>            Get Rossby using <m>: 'adv', 'ens'\n"
     print "\t-o <o>, --output=<o>    Set output file basename to <o>\n"
     print "\t-d <d>, --dpi=<d>       Set dpi to <d> for PNG images\n"
     print "\t-e, --eps               Generate EPS images\n"
@@ -87,7 +89,8 @@ if __name__=="__main__":
     try:
        opts, args = getopt.getopt(sys.argv[1:], "hi:c:o:d:se", 
                                   ["iter=", "output=", "eps", "dpi=",
-                               "case=", "omega=", "show", "no-tex", "help"])
+                                   "case=", "omega=", "show", "no-tex",
+                                   "method=", "help"])
 
     except getopt.GetoptError:
        print "\n---ERROR: Unknown Command Line Option---\n"
@@ -103,6 +106,7 @@ if __name__=="__main__":
     omega0 = 2.66e-6 # solar
     show = False
     tex = True
+    method = 'adv'
 
     # parse options
     for opt, arg in opts:
@@ -126,7 +130,9 @@ if __name__=="__main__":
             omega0 = float(arg)
         elif opt in ("--no-tex"):
             tex = False
+        elif opt in ("--method"):
+            method = arg
 
-    plot_rossby(iter, case, omega0, eps, dpi, show, output, tex)
+    plot_rossby(iter, case, omega0, eps, dpi, show, output, tex, method)
 
 
