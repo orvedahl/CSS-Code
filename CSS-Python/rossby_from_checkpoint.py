@@ -16,9 +16,9 @@ def rossby_from_chk(iter, case, omega0, method='adv', return_rad=False):
         # Use the advective term:
         #      Ro =  U / (2*L*Omega) where U = magnitude of vel
 
-        # get velocity
+        # get velocity, dont need rho or s --> vel_curl=True
         data, radius, theta, phi, time, header, ierr = read_checkpoint(\
-                                                  iter, case, vel_curl=False)
+                                                  iter, case, vel_curl=True)
         if (ierr):
             print "\n---ERROR: could not read checkpoint data---"
             print "\theader file: "+header+"\n"
@@ -26,12 +26,12 @@ def rossby_from_chk(iter, case, omega0, method='adv', return_rad=False):
 
         # average velocities over theta and phi
         # data is of size (nth, nphi, nr, 3) where last indices are
-        #    0 --> u_theta
-        #    1 --> u_phi
-        #    2 --> u_r
+        #    0, w --> u_phi
+        #    1, v --> u_theta
+        #    2, u --> u_r
+        vphi = numpy.mean(numpy.mean(data[:,:,:,0], axis=0), axis=0)
+        vth  = numpy.mean(numpy.mean(data[:,:,:,1], axis=0), axis=0)
         vr   = numpy.mean(numpy.mean(data[:,:,:,2], axis=0), axis=0)
-        vphi = numpy.mean(numpy.mean(data[:,:,:,1], axis=0), axis=0)
-        vth  = numpy.mean(numpy.mean(data[:,:,:,0], axis=0), axis=0)
 
         # magnitude of velocity
         U = numpy.sqrt(vr*vr + vth*vth + vphi*vphi)
