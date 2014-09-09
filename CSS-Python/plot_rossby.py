@@ -34,6 +34,9 @@ def plot_rossby(iter, case, omega0, eps, dpi, show, output, tex, method):
     ones = numpy.ones(len(radius))
     pylab.plot(radius, ones, label='Unity', linestyle=":", color='k')
 
+    pylab.plot(radius, ones*numpy.mean(rossby), label='Avg Ro',
+               linestyle="--", color='k')
+
     pylab.xlabel("Radius (cm)")
     pylab.ylabel("Rossby Number")
     pylab.title(title)
