@@ -9,6 +9,7 @@ import sys
 import getopt
 import numpy
 from read_checkpoint import *
+import integrate
 
 import pylab
 
@@ -94,7 +95,7 @@ def turnover_time(iter, case):
     print "\tTau (days): "+str(tau_2/86400.)
 
     # midpoint rule (trap rule has issues with 1/0)
-    tau_3 = integrate(abs(vr), radius, method='simp')
+    tau_3 = integrate.integrate_inv_vr(abs(vr), radius, method='simp')
     # tau_3 = radial_domain * abs(1./vr[nr/2])
 
     print "\nOption 3:"
@@ -146,53 +147,6 @@ def turnover_time(iter, case):
     pylab.ylabel('velocity')
     pylab.legend()
     pylab.show()
-
-def integrate(vr, rad, method='simp'):
-
-    intgrnd = 1./vr
-
-    # deal with possible 1./0.
-    ind_0 = numpy.where(vr == 0.)
-    intgrnd[ind_0] = 0.
-
-    integral = 0.0
-
-    # simpson's method with even/odd number of slabs
-    if (method == "simp"):
-
-        nslabs = len(rad) - 1
-
-        if nslabs%2==0:
-           M = nslabs
-           odd = False
-        else:
-           M = nslabs - 1
-           odd = True
-
-        # assumes a uniform grid
-        delta = rad[1] - rad[0]
-
-        n = 0
-        while (n < M):
-            # simpson integration over even number of slabs
-            integral += (1./3.)*delta*(\
-                                 intgrnd[n] + 4.*intgrnd[n+1] + intgrnd[n+2])
-            n += 2
-
-        if (odd):
-            # include last slab if it exists
-            integral += delta/12.*(\
-                -intgrnd[nslabs-2] + 8.*intgrnd[nslabs-1] + 5.*intgrnd[nslabs])
-
-    # trapezoid rule
-    elif (method == "trap"):
-        n = 0
-        while (n < len(rad)-1):
-            #            <----width---->  <------height in middle------>
-            integral += (rad[n+1]-rad[n])*0.5*(intgrnd[n] + intgrnd[n+1])
-            n += 1
-
-    return integral
 
 
 def rms(x, axis=None):
