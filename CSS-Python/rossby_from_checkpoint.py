@@ -31,9 +31,12 @@ def rossby_from_chk(iter, case, omega0, method='adv', return_rad=False):
         #    0, w --> u_phi
         #    1, v --> u_theta
         #    2, u --> u_r
-        vphi = numpy.mean(numpy.mean(data[:,:,:,0], axis=0), axis=0)
-        vth  = numpy.mean(numpy.mean(data[:,:,:,1], axis=0), axis=0)
-        vr   = numpy.mean(numpy.mean(data[:,:,:,2], axis=0), axis=0)
+
+        # average velocity components over theta,phi
+        avgdata = shell_avg.shell_avg_rms(data, theta, phi)
+        vr   = avgdata[:, 2]
+        vth  = avgdata[:, 1]
+        vphi = avgdata[:, 0]
 
         # magnitude of velocity
         U = numpy.sqrt(vr*vr + vth*vth + vphi*vphi)
@@ -102,18 +105,25 @@ def rossby_from_chk(iter, case, omega0, method='adv', return_rad=False):
         # get curl
         curl, radius, theta, phi = vectorcurl.vectorcurl(iter, case)
 
-        # get magnitude of curl --> sqrt(enstrophy)
-        ens = numpy.sqrt(curl[:,:,:,0]*curl[:,:,:,0] +
-                         curl[:,:,:,1]*curl[:,:,:,1] +
-                         curl[:,:,:,2]*curl[:,:,:,2])
-
         nr = len(radius)
         rossby = numpy.zeros((nr))
-        for ir in range(nr):
-            rossby[ir] = numpy.average(ens[:,:,ir])
+
+        # average curl over theta, phi
+        avgcurl = shell_avg.shell_avg_rms(curl, theta, phi)
+        ens = numpy.sqrt(avgcurl[:,0]*avgcurl[:,0] +
+                         avgcurl[:,1]*avgcurl[:,2] +
+                         avgcurl[:,2]*avgcurl[:,2])
+        # get magnitude of curl --> sqrt(enstrophy)
+        #ens = numpy.sqrt(curl[:,:,:,0]*curl[:,:,:,0] +
+        #                 curl[:,:,:,1]*curl[:,:,:,1] +
+        #                 curl[:,:,:,2]*curl[:,:,:,2])
+
+        #for ir in range(nr):
+        #    rossby[ir] = numpy.average(ens[:,:,ir])
 
         # divide by rotation rate of the frame
-        rossby[:] = rossby[:]/omega0
+        rossby[:] = ens[:]/omega0
+        #rossby[:] = rossby[:]/omega0
 
     else:
         print "\n---ERROR: unknown method in rossby_from_chk\n"
