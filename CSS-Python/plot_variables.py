@@ -10,6 +10,7 @@ import getopt
 import matplotlib
 import pylab
 from read_checkpoint import *
+import shell_avg
 
 
 def plot_vars(iter, case, eps, dpi, show, output, tex):
@@ -45,11 +46,17 @@ def plot_vars(iter, case, eps, dpi, show, output, tex):
     #    v   = index 2 (v-theta)
     #    u   = index 3 (v-r)
     #    s   = index 4 (entropy)
-    rho     = numpy.mean(numpy.mean(data[:,:,:,0], axis=0), axis=0)
-    vphi    = numpy.mean(numpy.mean(data[:,:,:,1], axis=0), axis=0)
-    vth     = numpy.mean(numpy.mean(data[:,:,:,2], axis=0), axis=0)
-    vr      = numpy.mean(numpy.mean(data[:,:,:,3], axis=0), axis=0)
-    entropy = numpy.mean(numpy.mean(data[:,:,:,4], axis=0), axis=0)
+    avgdata = shell_avg.shell_avg_rms(data, theta, phi)
+    rho     = avgdata[:,0]
+    vphi    = avgdata[:,1]
+    vth     = avgdata[:,2]
+    vr      = avgdata[:,3]
+    entropy = avgdata[:,4]
+    #rho     = numpy.mean(numpy.mean(data[:,:,:,0], axis=0), axis=0)
+    #vphi    = numpy.mean(numpy.mean(data[:,:,:,1], axis=0), axis=0)
+    #vth     = numpy.mean(numpy.mean(data[:,:,:,2], axis=0), axis=0)
+    #vr      = numpy.mean(numpy.mean(data[:,:,:,3], axis=0), axis=0)
+    #entropy = numpy.mean(numpy.mean(data[:,:,:,4], axis=0), axis=0)
 
     # plot it
     pylab.clf()

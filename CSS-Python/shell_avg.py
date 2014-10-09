@@ -2,7 +2,7 @@
 #
 # calculate a shell average of data
 #
-# i.e. data(theta, phi, r, nq) ---> data(r, nq)_rms
+# i.e. data(theta, phi, r, nq) ---> data(r, nq)
 #
 # Orvedahl R. 9-9-2014
 #
@@ -11,12 +11,12 @@ import sys
 import numpy
 import integrate
 
-def shell_avg_rms(data, theta, phi, method="simp"):
+def shell_avg(data, theta, phi, numq=None,  method="simp"):
 
     # idea:
-    #                        integral( data**2 sin(th) dth dphi )
-    #      avgdata(r)**2 = ----------------------------------------
-    #                           integral( sin(th) dth dphi )
+    #                     integral( data sin(th) dth dphi )
+    #      avgdata(r) = -------------------------------------
+    #                        integral( sin(th) dth dphi )
     # 
     #      the r**2 in the area elements cancel each other
     #
@@ -28,48 +28,51 @@ def shell_avg_rms(data, theta, phi, method="simp"):
     philo = phi[0]
     thhi  = theta[-1]
     thlo  = theta[0]
-    dphi  = phihi - philo
-    dth   = thhi - thlo
+    dphi  = phi[1] - phi[0]
+    dth   = theta[1] - theta[0]
 
     stheta = numpy.sin(theta)
 
     # calculate denominator integral
     area = (phihi - philo)*(numpy.cos(thlo) - numpy.cos(thhi))
-    invrootarea = numpy.sqrt(1./area)
+    invarea = 1./area
 
-    nr = numpy.size(data, axis=2)
-    nq = numpy.size(data, axis=3)
     nth = len(theta)
     nphi = len(phi)
+    nr = numpy.size(data, axis=2)
+
+    # sometimes we want an average of only one quantity
+    if (numq==None):
+        nq = numpy.size(data, axis=3)
+    else:
+        nq = 1
+        data = numpy.reshape(data, (nth, nphi, nr, nq))
 
     avgdata = numpy.zeros((nr, nq))
     tmp = numpy.zeros((nth, nr, nq))
 
-    # first integrate over phi
-    nslabs = nphi - 1
+    # first: multiply by sin(theta)
+    for k in range(nq):
+        for j in range(nr):
+            for i in range(nphi):
+                data[:,i,j,k] = stheta*data[:,i,j,k]
+
+    # second: integrate over phi
     for k in range(nq):
         for j in range(nr):
             for i in range(nth):
-                val = integrate.integrate1D(data[i,:,j,k]*data[i,:,j,k], phi,
-                                            dphi, nslabs, method=method)
+                val = integrate.integrate1D(data[i,:,j,k], phi, dphi, 
+                                            method=method)
                 tmp[i,j,k] = val
 
-    # square tmp and multiply by sin(theta)
+    # third: integrate over theta
     for j in range(nq):
         for i in range(nr):
-            tmp[:,i,j] = stheta*tmp[:,i,j]*tmp[:,i,j]
-
-    # second integrate over theta
-    nslabs = nth - 1
-    for j in range(nq):
-        for i in range(nr):
-            # this is an RMS value so take sqrt
-            val = integrate.integrate1D(tmp[:,i,j], theta, dth, nslabs, 
-                                      method=method)
-            avgdata[i,j] = numpy.sqrt(val)
+            val = integrate.integrate1D(tmp[:,i,j], theta, dth, method=method)
+            avgdata[i,j] = val
 
     # normalize by the area
-    avgdata = invrootarea*avgdata
+    avgdata = invarea*avgdata
 
     return avgdata
 

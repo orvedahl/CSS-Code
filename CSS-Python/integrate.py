@@ -9,10 +9,10 @@ import numpy
 ##########################################################################
 # interface to 1D integration routines
 ##########################################################################
-def integrate1D(func, x, dx, nslabs, method="simp"):
+def integrate1D(func, x, dx, method="simp"):
 
     if (method == "simp"):
-        integral = simpson_integrate(func, dx, nslabs)
+        integral = simpson_integrate(func, dx)
 
     elif (method == "trap"):
         integral = trap_integrate(func, x)
@@ -39,8 +39,7 @@ def integrate_inv_vr(vr, rad, method='simp'):
     # simpson's method with even/odd number of slabs
     if (method == "simp"):
         dr = rad[1] - rad[0]    # assumes a uniform grid
-        nslabs = len(rad) - 1
-        integral = simpson_integrate(intgrnd, dr, nslabs)
+        integral = simpson_integrate(intgrnd, dr)
 
     # trapezoid rule
     elif (method == "trap"):
@@ -55,7 +54,7 @@ def integrate_inv_vr(vr, rad, method='simp'):
 def trap_integrate(func, x):
 
     integral = 0.
-    N = len(rad) - 1
+    N = len(x) - 1
 
     n = 0
     while (n < N):
@@ -69,19 +68,19 @@ def trap_integrate(func, x):
 ##########################################################################
 # Simpson Rule Integration (1D)
 ##########################################################################
-def simpson_integrate(func, dx, nslabs):
+def simpson_integrate(func, dx):
+
+    nslabs = len(func) - 1
 
     integral = 0.
 
     if nslabs%2==0:
-       M = nslabs
        odd = False
     else:
-       M = nslabs - 1
        odd = True
 
     n = 0
-    while (n < M):
+    while (n <= nslabs - 2):
         # simpson integration over even number of slabs
         integral += (1./3.)*dx*(func[n] + 4.*func[n+1] + func[n+2])
         n += 2
