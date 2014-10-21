@@ -4,8 +4,10 @@
 # Ideally you should put this file in a central location, such as ${HOME}/bin,
 # and add that location to your PYTHONPATH environment variable. This will 
 # allow you to have only one copy of this file and be able to import it from
-# any python code you write. You will also need to change the name of this
-# file from "relative_import_template.py" to "relative_import.py"
+# any python code you write. It will still run if you do not do this, but 
+# everytime you want to use the append_path function, this file will need to 
+# be in whatever working directory you started from (not a huge deal for the 
+# Unit-Test directory).
 #
 # To do this, use the following set of instructions:
 #    [user@host ~]$ cd           <-- change to HOME directory

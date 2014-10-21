@@ -98,24 +98,24 @@ def test():
     # varying r
     x1 = true[it1,ip1,:,ir]; y1 = curl_data[it1,ip1,:,ir]
     x2 = true[it2,ip2,:,ir]; y2 = curl_data[it2,ip2,:,ir]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dr)
+    l2_2 = l2norm(x2, y2, dr)
     print "\tvarying r L2 pt1: ",l2_1
     print "\tvarying r L2 pt2: ",l2_2
     show_plot("Radial-Comp, vary radius", x1, x2, y1, y2, radius, plot)
     # varying theta
     x1 = true[:,ip1,ir1,ir]; y1 = curl_data[:,ip1,ir1,ir]
     x2 = true[:,ip2,ir2,ir]; y2 = curl_data[:,ip2,ir2,ir]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dth)
+    l2_2 = l2norm(x2, y2, dth)
     print "\tvarying th L2 pt1: ",l2_1
     print "\tvarying th L2 pt2: ",l2_2
     show_plot("Radial-Comp, vary theta", x1, x2, y1, y2, theta, plot)
     # varying phi
     x1 = true[it1,:,ir1,ir]; y1 = curl_data[it1,:,ir1,ir]
     x2 = true[it2,:,ir2,ir]; y2 = curl_data[it2,:,ir2,ir]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dphi)
+    l2_2 = l2norm(x2, y2, dphi)
     print "\tvarying phi L2 pt1: ",l2_1
     print "\tvarying phi L2 pt2: ",l2_2
     show_plot("Radial-Comp, vary phi", x1, x2, y1, y2, phi, plot)
@@ -126,24 +126,24 @@ def test():
     # varying r
     x1 = true[it1,ip1,:,ith]; y1 = curl_data[it1,ip1,:,ith]
     x2 = true[it2,ip2,:,ith]; y2 = curl_data[it2,ip2,:,ith]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dr)
+    l2_2 = l2norm(x2, y2, dr)
     print "\tvarying r L2 pt1: ",l2_1
     print "\tvarying r L2 pt2: ",l2_2
     show_plot("Theta-Comp, vary radius", x1, x2, y1, y2, radius, plot)
     # varying theta
     x1 = true[:,ip1,ir1,ith]; y1 = curl_data[:,ip1,ir1,ith]
     x2 = true[:,ip2,ir2,ith]; y2 = curl_data[:,ip2,ir2,ith]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dth)
+    l2_2 = l2norm(x2, y2, dth)
     print "\tvarying th L2 pt1: ",l2_1
     print "\tvarying th L2 pt2: ",l2_2
     show_plot("Theta-Comp, vary theta", x1, x2, y1, y2, theta, plot)
     # varying phi
     x1 = true[it1,:,ir1,ith]; y1 = curl_data[it1,:,ir1,ith]
     x2 = true[it2,:,ir2,ith]; y2 = curl_data[it2,:,ir2,ith]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dphi)
+    l2_2 = l2norm(x2, y2, dphi)
     print "\tvarying phi L2 pt1: ",l2_1
     print "\tvarying phi L2 pt2: ",l2_2
     show_plot("Theta-Comp, vary phi", x1, x2, y1, y2, phi, plot)
@@ -154,24 +154,24 @@ def test():
     # varying r
     x1 = true[it1,ip1,:,iphi]; y1 = curl_data[it1,ip1,:,iphi]
     x2 = true[it2,ip2,:,iphi]; y2 = curl_data[it2,ip2,:,iphi]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dr)
+    l2_2 = l2norm(x2, y2, dr)
     print "\tvarying r L2 pt1: ",l2_1
     print "\tvarying r L2 pt2: ",l2_2
     show_plot("Phi-Comp, vary radius", x1, x2, y1, y2, radius, plot)
     # varying theta
     x1 = true[:,ip1,ir1,iphi]; y1 = curl_data[:,ip1,ir1,iphi]
     x2 = true[:,ip2,ir2,iphi]; y2 = curl_data[:,ip2,ir2,iphi]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dth)
+    l2_2 = l2norm(x2, y2, dth)
     print "\tvarying th L2 pt1: ",l2_1
     print "\tvarying th L2 pt2: ",l2_2
     show_plot("Phi-Comp, vary theta", x1, x2, y1, y2, theta, plot)
     # varying phi
     x1 = true[it1,:,ir1,iphi]; y1 = curl_data[it1,:,ir1,iphi]
     x2 = true[it2,:,ir2,iphi]; y2 = curl_data[it2,:,ir2,iphi]
-    l2_1 = l2norm(x1, y1)
-    l2_2 = l2norm(x2, y2)
+    l2_1 = l2norm(x1, y1, dphi)
+    l2_2 = l2norm(x2, y2, dphi)
     print "\tvarying phi L2 pt1: ",l2_1
     print "\tvarying phi L2 pt2: ",l2_2
     show_plot("Phi-Comp, vary phi", x1, x2, y1, y2, phi, plot)
@@ -212,9 +212,9 @@ def show_plot(title, true1, true2, data1, data2, x, plot):
 
     return
 
-def l2norm(x, y):
+def l2norm(x, y, dx):
 
-    l2 = numpy.sqrt(numpy.sum((x - y)**2))
+    l2 = numpy.sqrt(dx*numpy.sum((x - y)**2))
 
     return l2
 
