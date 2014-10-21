@@ -46,7 +46,7 @@ def compact_fd6(dri, arr, b1, b2, ibc, dtype=0, darr=None):
     if ((dtype == 1) or (dtype == 3)):
         darr[0] = c1*(arr[1]-b1[3]) + c2*(arr[2]-b1[2])
         darr[1] = c1*(arr[2]-arr[0]) + c2*(arr[3]-b1[3])
-    elif ((dtype == 2) or (dtype == 3)):
+    if ((dtype == 2) or (dtype == 3)):
         darr[n1-2] = c1*(arr[n1-1]-arr[n1-3]) + c2*(b2[0]-arr[n1-4])
         darr[n1-1] = c1*(b2[0]-arr[n1-2]) + c2*(b2[1]-arr[n1-3])
 
@@ -171,7 +171,7 @@ def compact_fd6(dri, arr, b1, b2, ibc, dtype=0, darr=None):
 
         # dtype = 3 (internal boundaries only)
         darr[0] += -alpha*(\
-                      -b1[0]-9.*b1[1]-45.*b1[2]+45.*arr[0]-9.*arr[1]+arr[2])
+                      -b1[0]+9.*b1[1]-45.*b1[2]+45.*arr[0]-9.*arr[1]+arr[2])
         darr[0] *= dli/60.
 
         darr[n1-1] += -alpha*(\
