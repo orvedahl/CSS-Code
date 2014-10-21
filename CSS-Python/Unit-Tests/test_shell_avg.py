@@ -97,7 +97,7 @@ def test():
 
     true = exact(radius, phi, theta)
 
-    l2norm = numpy.sqrt(numpy.sum((true-avgdata)**2))
+    l2norm = numpy.sqrt(dr*numpy.sum((true-avgdata)**2))
 
     print "\nL2 Norm: ",l2norm
     print

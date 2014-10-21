@@ -12,6 +12,7 @@ import relative_import
 relative_import.append_path(os.path.dirname(os.path.realpath(__file__))+"/..")
 import derivatives as d
 import numpy
+import pylab
 
 def test_diff(nr, ibc, dtype):
 
@@ -63,11 +64,27 @@ def test_diff(nr, ibc, dtype):
     # the dr multiplier is to make it grid invariant
     global_err = numpy.sqrt(dr*numpy.sum(local_err*local_err))
 
-    print "\nglobal error 1st deriv: ",global_err
+    pylab.clf()
+    pylab.plot(r, df1, color='b', linestyle="-", label='df')
+    pylab.plot(r, exact1, color='b', linestyle='--', label='df exact')
+    pylab.ylabel("df")
+    pylab.xlabel("radius")
+    pylab.title("ibc %d, dtype %d" %(ibc, dtype))
+    pylab.legend(loc='lower left')
+
+    pylab.twinx()
+    pylab.plot(r, local_err, color='r', label='abs error')
+    pylab.ylabel("df/dr - exact")
+    pylab.legend(loc='lower right')
+    pylab.show()
+
+    print "\nibc: ", ibc
+    print "dtype: ", dtype
+    print "nr:",len(r)
+    print "dr:",dr
+    print "global error 1st deriv: ",global_err
     print "deriv at r[nr/4]", df1[nr/4]
     print "exact at r[nr/4]", exact1[nr/4]
-    print "dr:",dr
-    print "nr:",len(r)
 
     return
 
@@ -89,5 +106,10 @@ if __name__ == "__main__":
         if opt in ("-n", "--nr"):
             nr = int(arg)
 
-    test_diff(nr, 0, 0)
+    # test all options of ibc & dtype
+    for ibc in [0,1,2,3,4]:
+        test_diff(nr, ibc, 0)
+        test_diff(nr, ibc, 1)
+        test_diff(nr, ibc, 2)
+        test_diff(nr, ibc, 3)
 
