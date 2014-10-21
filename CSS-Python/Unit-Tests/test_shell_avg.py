@@ -5,10 +5,14 @@
 # 10-9-2014 Orvedahl R.
 #
 
-import shell_avg
+import os
 import numpy
 import pylab
 from numpy import sin, cos
+import relative_import
+unit_test_dir = os.path.dirname(os.path.realpath(__file__))
+relative_import.append_path(unit_test_dir+"/..") # import modules from ./.. dir
+import shell_avg
 
 # function to average
 def func(rad, theta, phi):

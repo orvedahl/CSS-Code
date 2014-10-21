@@ -5,6 +5,10 @@
 # 9-27-2014 Orvedahl R.
 #
 
+import os
+import relative_import
+unit_test_dir = os.path.dirname(os.path.realpath(__file__)) # path of this file
+relative_import.append_path(unit_test_dir+"/..")
 import integrate as integ
 import numpy
 import pylab

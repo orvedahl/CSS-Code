@@ -5,6 +5,11 @@
 # 7-8-2014 Orvedahl R.
 #
 
+import os
+import sys
+import getopt
+import relative_import
+relative_import.append_path(os.path.dirname(os.path.realpath(__file__))+"/..")
 import derivatives as d
 import numpy
 
@@ -55,9 +60,34 @@ def test_diff(nr, ibc, dtype):
     df1 = d.compact_fd6(dri, f, b1, b2, ibc, dtype, darr=df)
 
     local_err = df1 - exact1
-    global_err = numpy.sqrt(numpy.sum(local_err*local_err))
+    # the dr multiplier is to make it grid invariant
+    global_err = numpy.sqrt(dr*numpy.sum(local_err*local_err))
 
     print "\nglobal error 1st deriv: ",global_err
+    print "deriv at r[nr/4]", df1[nr/4]
+    print "exact at r[nr/4]", exact1[nr/4]
+    print "dr:",dr
+    print "nr:",len(r)
 
     return
+
+if __name__ == "__main__":
+
+    try:
+       opts, args = getopt.getopt(sys.argv[1:], "n:", ["--nr"])
+    except getopt.GetoptError:
+       print "\nUnknown command line arg"
+       print "\nUsage:\n"
+       print "\t./test_compact_diff.py -n <nr>"
+       print "\t./test_compact_diff.py --nr <nr>"
+       print
+       sys.exit(2)
+
+    nr = 128
+
+    for opt, arg in opts:
+        if opt in ("-n", "--nr"):
+            nr = int(arg)
+
+    test_diff(nr, 0, 0)
 
