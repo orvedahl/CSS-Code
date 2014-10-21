@@ -27,7 +27,7 @@ def vectorcurl(iter, case, mag=False, test=None):
     iphi = 0
     ith  = 1
     irad = 2
-    if (test != None):
+    if (test == None):
         data, rad, theta, phi, time, header, ierr = read_ck.read_checkpoint(\
                                                    iter, case, mag_curl=mag, 
                                                    vel_curl=True)
