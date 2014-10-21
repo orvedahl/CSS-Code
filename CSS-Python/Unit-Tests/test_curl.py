@@ -45,7 +45,7 @@ def func(rad, theta, phi):
 
                 # exact curl
                 exact[i,j,k,ir] = 2.*cos(p)**2*cos(t)/r1 + sin(p)*sin(t)/r2
-                exact[i,j,k,ith] = -r*sin(t) - 1.5*cos(p)**2*sin(t)/r1
+                exact[i,j,k,ith] = -r*sin(p) - 1.5*cos(p)**2*sin(t)/r1
                 exact[i,j,k,iphi] = -r*cos(t)*cos(p)
 
     return f, exact
@@ -85,6 +85,8 @@ def test():
     curl_data = curl_data[0] # vectorcurl returns 4 objects, we only 
                              # care about the first one
 
+    plot = True
+
     it1 = int(0.3*nth)
     it2 = int(0.6*nth)
     ip1 = int(0.3*nphi)
@@ -94,79 +96,127 @@ def test():
     # R-Component
     print "\nRadial Component:"
     # varying r
-    l2_1 = l2norm(true[it1,ip1,:,ir], curl_data[it1,ip1,:,ir])
-    l2_2 = l2norm(true[it2,ip2,:,ir], curl_data[it2,ip2,:,ir])
+    x1 = true[it1,ip1,:,ir]; y1 = curl_data[it1,ip1,:,ir]
+    x2 = true[it2,ip2,:,ir]; y2 = curl_data[it2,ip2,:,ir]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying r L2 pt1: ",l2_1
     print "\tvarying r L2 pt2: ",l2_2
+    show_plot("Radial-Comp, vary radius", x1, x2, y1, y2, radius, plot)
     # varying theta
-    l2_1 = l2norm(true[:,ip1,ir1,ir], curl_data[:,ip1,ir1,ir])
-    l2_2 = l2norm(true[:,ip2,ir2,ir], curl_data[:,ip2,ir2,ir])
+    x1 = true[:,ip1,ir1,ir]; y1 = curl_data[:,ip1,ir1,ir]
+    x2 = true[:,ip2,ir2,ir]; y2 = curl_data[:,ip2,ir2,ir]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying th L2 pt1: ",l2_1
     print "\tvarying th L2 pt2: ",l2_2
+    show_plot("Radial-Comp, vary theta", x1, x2, y1, y2, theta, plot)
     # varying phi
-    l2_1 = l2norm(true[it1,:,ir1,ir], curl_data[it1,:,ir1,ir])
-    l2_2 = l2norm(true[it2,:,ir2,ir], curl_data[it2,:,ir2,ir])
+    x1 = true[it1,:,ir1,ir]; y1 = curl_data[it1,:,ir1,ir]
+    x2 = true[it2,:,ir2,ir]; y2 = curl_data[it2,:,ir2,ir]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying phi L2 pt1: ",l2_1
     print "\tvarying phi L2 pt2: ",l2_2
+    show_plot("Radial-Comp, vary phi", x1, x2, y1, y2, phi, plot)
+
 
     # Theta-Component
     print "\nTheta Component:"
     # varying r
-    l2_1 = l2norm(true[it1,ip1,:,ith], curl_data[it1,ip1,:,ith])
-    l2_2 = l2norm(true[it2,ip2,:,ith], curl_data[it2,ip2,:,ith])
+    x1 = true[it1,ip1,:,ith]; y1 = curl_data[it1,ip1,:,ith]
+    x2 = true[it2,ip2,:,ith]; y2 = curl_data[it2,ip2,:,ith]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying r L2 pt1: ",l2_1
     print "\tvarying r L2 pt2: ",l2_2
+    show_plot("Theta-Comp, vary radius", x1, x2, y1, y2, radius, plot)
     # varying theta
-    l2_1 = l2norm(true[:,ip1,ir1,ith], curl_data[:,ip1,ir1,ith])
-    l2_2 = l2norm(true[:,ip2,ir2,ith], curl_data[:,ip2,ir2,ith])
+    x1 = true[:,ip1,ir1,ith]; y1 = curl_data[:,ip1,ir1,ith]
+    x2 = true[:,ip2,ir2,ith]; y2 = curl_data[:,ip2,ir2,ith]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying th L2 pt1: ",l2_1
     print "\tvarying th L2 pt2: ",l2_2
+    show_plot("Theta-Comp, vary theta", x1, x2, y1, y2, theta, plot)
     # varying phi
-    l2_1 = l2norm(true[it1,:,ir1,ith], curl_data[it1,:,ir1,ith])
-    l2_2 = l2norm(true[it2,:,ir2,ith], curl_data[it2,:,ir2,ith])
+    x1 = true[it1,:,ir1,ith]; y1 = curl_data[it1,:,ir1,ith]
+    x2 = true[it2,:,ir2,ith]; y2 = curl_data[it2,:,ir2,ith]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying phi L2 pt1: ",l2_1
     print "\tvarying phi L2 pt2: ",l2_2
+    show_plot("Theta-Comp, vary phi", x1, x2, y1, y2, phi, plot)
 
 
     # Phi-Component
     print "\nPhi Component:"
     # varying r
-    l2_1 = l2norm(true[it1,ip1,:,iphi], curl_data[it1,ip1,:,iphi])
-    l2_2 = l2norm(true[it2,ip2,:,iphi], curl_data[it2,ip2,:,iphi])
+    x1 = true[it1,ip1,:,iphi]; y1 = curl_data[it1,ip1,:,iphi]
+    x2 = true[it2,ip2,:,iphi]; y2 = curl_data[it2,ip2,:,iphi]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying r L2 pt1: ",l2_1
     print "\tvarying r L2 pt2: ",l2_2
+    show_plot("Phi-Comp, vary radius", x1, x2, y1, y2, radius, plot)
     # varying theta
-    l2_1 = l2norm(true[:,ip1,ir1,iphi], curl_data[:,ip1,ir1,iphi])
-    l2_2 = l2norm(true[:,ip2,ir2,iphi], curl_data[:,ip2,ir2,iphi])
+    x1 = true[:,ip1,ir1,iphi]; y1 = curl_data[:,ip1,ir1,iphi]
+    x2 = true[:,ip2,ir2,iphi]; y2 = curl_data[:,ip2,ir2,iphi]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying th L2 pt1: ",l2_1
     print "\tvarying th L2 pt2: ",l2_2
+    show_plot("Phi-Comp, vary theta", x1, x2, y1, y2, theta, plot)
     # varying phi
-    l2_1 = l2norm(true[it1,:,ir1,iphi], curl_data[it1,:,ir1,iphi])
-    l2_2 = l2norm(true[it2,:,ir2,iphi], curl_data[it2,:,ir2,iphi])
+    x1 = true[it1,:,ir1,iphi]; y1 = curl_data[it1,:,ir1,iphi]
+    x2 = true[it2,:,ir2,iphi]; y2 = curl_data[it2,:,ir2,iphi]
+    l2_1 = l2norm(x1, y1)
+    l2_2 = l2norm(x2, y2)
     print "\tvarying phi L2 pt1: ",l2_1
     print "\tvarying phi L2 pt2: ",l2_2
-
+    show_plot("Phi-Comp, vary phi", x1, x2, y1, y2, phi, plot)
 
     print
 
-    #pylab.clf()
+    return
 
-    #pylab.plot(radius, true, label='true', color='r', linestyle='--')
-    #pylab.plot(radius, avgdata, label='avg', color='b', linestyle='-')
-    #pylab.legend(loc='lower left')
+def show_plot(title, true1, true2, data1, data2, x, plot):
 
-    #pylab.twinx()
-    #pylab.plot(radius, (avgdata - true)/true, label='% err', 
-               #color='g', linestyle='--')
-    #pylab.legend(loc='lower right')
+    if (not plot): return
 
-    #pylab.show()
+    pylab.clf()
+
+    pylab.title(title)
+
+    l1 = "-"
+    l2 = "--"
+    colt = "r"  # true data
+    cold = "b"  # data
+    colr = "g"  # residual
+
+    pylab.plot(x, true1, label='true-1', color=colt, linestyle=l1)
+    pylab.plot(x, true2, label='true-2', color=colt, linestyle=l2)
+
+    pylab.plot(x, data1, label='data-1', color=cold, linestyle=l1)
+    pylab.plot(x, data2, label='data-2', color=cold, linestyle=l2)
+    pylab.legend(loc='upper left')
+
+    pylab.twinx()
+    pylab.plot(x, (data1-true1)/true1, label='data-1 % err', color=colr, 
+               linestyle=l1)
+    pylab.plot(x, (data2-true2)/true2, label='data-2 % err', color=colr, 
+               linestyle=l2)
+    pylab.legend(loc='upper right')
+
+    pylab.show()
 
     return
 
 def l2norm(x, y):
 
-    return numpy.sqrt(numpy.sum((x-y)**2))
+    l2 = numpy.sqrt(numpy.sum((x - y)**2))
+
+    return l2
 
 if __name__ == "__main__":
 
