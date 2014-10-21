@@ -17,7 +17,7 @@ import defaults
 #######################################################################
 # vector curl
 #######################################################################
-def vectorcurl(iter, case, mag=False):
+def vectorcurl(iter, case, mag=False, test=None):
 
     # read data from checkpoint
     # data is of size (nth, nphi, nr, 3) where last indices are
@@ -27,14 +27,21 @@ def vectorcurl(iter, case, mag=False):
     iphi = 0
     ith  = 1
     irad = 2
-    data, rad, theta, phi, time, header, ierr = read_ck.read_checkpoint(\
+    if (test != None):
+        data, rad, theta, phi, time, header, ierr = read_ck.read_checkpoint(\
                                                    iter, case, mag_curl=mag, 
                                                    vel_curl=True)
-    if (ierr):
-        print "\nERROR: could not extract data from checkpoint"
-        print "\theader file: "+header
-        print
-        sys.exit(2)
+        if (ierr):
+            print "\nERROR: could not extract data from checkpoint"
+            print "\theader file: "+header
+            print
+            sys.exit(2)
+    else:
+        # test is list of data, radius, theta & phi arrays
+        data  = test[0]
+        rad   = test[1]
+        theta = test[2]
+        phi   = test[3]
 
     # get inverses
     dri = 1./(rad[-1] - rad[0])
