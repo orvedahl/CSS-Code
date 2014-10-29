@@ -40,6 +40,8 @@ def compact_fd6(dri, arr, b1, b2, ibc, dtype=0, darr=None):
     else:
         dli = float(n1-1)
 
+    # multiply each coefficient by dli=(n-1) and multiply end result 
+    # by dri=1/(x2-x1). this is same as multiplying by (n-1)/(x2-x1)=1/dx
     c1 = dli*7./9.
     c2 = dli/36.
 

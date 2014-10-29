@@ -34,7 +34,7 @@ def tri_solver(lowr, diag, uppr, rhs, n, its=0):
 
         # zero pivot
         result[1] = 5.5*rhs[2] - 5.5*result[2] - result[3]
-        result[0] = rhs[0] = 10.*result[1]
+        result[0] = rhs[0] - 10.*result[1]
 
     elif (its == 2):
 
