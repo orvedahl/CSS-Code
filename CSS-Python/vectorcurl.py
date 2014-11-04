@@ -66,19 +66,17 @@ def vectorcurl(iter, case, mag=False, test=None):
         ri = rinv[ir]
         for ip in range(nphi):
             # tmp = sin(th)*Vphi
-            tmp = sines*data[:,ip,ir,iphi] # FIXME: index before iphi was 1
+            tmp = sines*data[:,ip,ir,iphi]
 
             # fill boundary conditions: Neumann on x1 & x2 (ibc=4)
-            bc1 = -cosines[0]*data[0,ip,ir,irad]/dti   # FIXME: index was 2
-            bc2 = -cosines[-1]*data[-1,ip,ir,irad]/dti #        before irad
+            bc1 = -cosines[0]*data[0,ip,ir,irad]/dti
+            bc2 = -cosines[-1]*data[-1,ip,ir,irad]/dti
 
             # r-component curl = 1/(r*sin(th)) * d(Vphi*sin(th))/dtheta
             curl[:,ip,ir,irad] = ri*cosec*compact_fd6(dti, tmp, bc1, bc2, 4)
-            # FIXME: old index was irad=2
 
             # tmp = Vr
             tmp = data[:,ip,ir,irad]
-            # FIXME: old index was irad=2
 
             # boundaries: dtmp/dtheta = 0 (ibc=0)
             bc1 = 0.
@@ -86,7 +84,6 @@ def vectorcurl(iter, case, mag=False, test=None):
 
             # phi-component curl = -1/r * dVr/dtheta
             curl[:,ip,ir,iphi] = -ri*compact_fd6(dti, tmp, bc1, bc2, 0)
-            # FIXME: old index was iphi=1
 
         per = str(round(100.*ir/float(nr-1),1))
         # the "\r" returns to the beginning of the line
@@ -101,31 +98,29 @@ def vectorcurl(iter, case, mag=False, test=None):
         ri = rinv[ir]
         for it in range(nth):
             # tmp = Vr
-            tmp = data[it,:,ir,irad] # FIXME: old index irad=2
+            tmp = data[it,:,ir,irad]
 
             # boundaries: Neumann on x1 & x2 (ibc=4)
             # domain type is internal (dtype=3)
-            bc1 = data[it,nphi-4:nphi-1+1,ir,irad] # FIXME: old index irad=2
-            bc2 = data[it,0:3+1,ir,irad]           # FIXME: old index irad=2
+            bc1 = data[it,nphi-4:nphi-1+1,ir,irad]
+            bc2 = data[it,0:3+1,ir,irad]
 
             # theta-component curl = 1/(r*sin(th)) * dVr/dphi
             curl[it,:,ir,ith] = ri*cosec[it]*compact_fd6(dpi, tmp, bc1, bc2, 
                                                        4, dtype=3)
-            # FIXME: old index ith=0
 
             # tmp = Vth
-            tmp = data[it,:,ir,ith] # FIXME: old index ith=0
+            tmp = data[it,:,ir,ith]
 
             # fill boundary: Neumann on x1 & x2 (ibc=4)
             # internal domain type (dtype=3)
-            bc1 = data[it,nphi-4:nphi-1+1,ir,ith] # FIXME: old index ith=0
-            bc2 = data[it,0:3+1,ir,ith]           # FIXME: old index ith=0
+            bc1 = data[it,nphi-4:nphi-1+1,ir,ith]
+            bc2 = data[it,0:3+1,ir,ith]
 
             # r-component curl = -1/(r*sin(th)) * dVth/dphi
             # r-component has been partially filled already so need "+="
             curl[it,:,ir,irad] += -ri*cosec[it]*compact_fd6(dpi, tmp, bc1, bc2,
                                                          4, dtype=3)
-            # FIXME: old index irad=2
 
         per = str(round(100.*ir/float(nr-1),1))
         sys.stdout.write("\r" + "\t% Completed: "+per+20*" ")
@@ -136,28 +131,26 @@ def vectorcurl(iter, case, mag=False, test=None):
     for ip in range(nphi):
         for it in range(nth):
             # tmp = r*Vphi
-            tmp = rad*data[it,ip,:,iphi] # FIXME: old index iphi=2
+            tmp = rad*data[it,ip,:,iphi]
 
             # boundaries: Neumann on x1 & x2 (ibc=4)
-            bc1 = -data[it,ip,0,irad]/dri  # FIXME: old index irad=2
-            bc2 = -data[it,ip,-1,irad]/dri # FIXME: old index irad=2
+            bc1 = -data[it,ip,0,irad]/dri
+            bc2 = -data[it,ip,-1,irad]/dri
 
             # theta-component curl = -1/r * d(r*Vphi)/dr
             # theta-component has been partially filled already so need "+="
             curl[it,ip,:,ith] += -rinv*compact_fd6(dri, tmp, bc1, bc2, 4)
-            # FIXME: old index ith=0
 
             # tmp = r*Vth
-            tmp = rad*data[it,ip,:,ith] # FIXME: old index ith=0
+            tmp = rad*data[it,ip,:,ith]
 
             # boundaries: dtmp/dr = 0 (ibc=0)
-            bc1 = -data[it,ip,0,ith]/dri  # FIXME: old index ith=0
+            bc1 = -data[it,ip,0,ith]/dri
             bc2 = -data[it,ip,-1,ith]/dri
 
             # phi-component curl = -1/r * d(rVth)/dr
             # phi-component has been partially filled already so need "+="
             curl[it,ip,:,iphi] += rinv*compact_fd6(dri, tmp, bc1, bc2, 0)
-            # FIXME: old index iphi=1
 
         per = str(round(100.*ip/float(nphi-1),1))
         sys.stdout.write("\r" + "\t% Completed: "+per+20*" ")
