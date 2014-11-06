@@ -9,17 +9,21 @@ import os
 import relative_import
 unit_test_dir = os.path.dirname(os.path.realpath(__file__)) # path of this file
 relative_import.append_path(unit_test_dir+"/..")
-import integrate as integ
+#from integrate import integrate1D as int1D
+from integratef90 import integrate1d as int1D
 import numpy
+from numpy import exp, cos, sin
 import pylab
 
 def func(x):
-    #return numpy.sin(x)
     return numpy.sin(numpy.pi*x)
+    #return -2.0*0.1*x*exp(-0.1*x*x)*cos(x) - exp(-0.1*x*x)*sin(x)
 
 def exact(xlo, xhi):
-    #return -numpy.cos(xhi) + numpy.cos(xlo)
     return (1./numpy.pi)*(-numpy.cos(numpy.pi*xhi) + numpy.cos(numpy.pi*xlo))
+    #def f(x):
+    #    return exp(-0.1*x*x)*cos(x)
+    #return f(xhi) - f(xlo)
 
 def test():
 
@@ -41,7 +45,7 @@ def test():
         x = numpy.arange(xlo, xhi+delta, delta)
         f = func(x)
 
-        integral = integ.integrate1D(f, x, delta, method='simp')
+        integral = int1D(f, x, delta, method='simp')
 
         e = abs(integral - exact(xlo, xhi))
         dx.append(delta)
@@ -51,7 +55,7 @@ def test():
     dx = numpy.array(dx)
     err = numpy.array(err)
 
-    pylab.plot(dx, err, linestyle="", marker="x", color='k')
+    pylab.plot(dx, err, linestyle="", marker="x", color='r')
 
     #pylab.plot(dx, err[0]*(dx/dx[0])**1,color='r',linestyle="--",label="1st")
     pylab.plot(dx, err[0]*(dx/dx[0])**2,color='b',linestyle="--",label="2nd")
