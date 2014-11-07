@@ -12,7 +12,10 @@ from numpy import sin, cos
 import relative_import
 unit_test_dir = os.path.dirname(os.path.realpath(__file__))
 relative_import.append_path(unit_test_dir+"/..") # import modules from ./.. dir
-import shell_avg
+#from shell_avg import shell_avg   # pure python
+import shell_avgf90               # pure fortran
+shell_avg = shell_avgf90.shell_avgf90.full_shell_avg
+import time
 
 # function to average
 def func(rad, theta, phi):
@@ -70,6 +73,8 @@ def exact(r, phi, th):
 
 def test():
 
+    starttime = time.time()
+
     # set up theta, phi, r, quantities
     rlo = 6.2e10
     rhi = 6.96e10
@@ -90,7 +95,7 @@ def test():
     data = func(radius, theta, phi)
 
     # avgdata has dimensions of (nr, nq)
-    avgdata = shell_avg.shell_avg(data, theta, phi, method='simp')
+    avgdata = shell_avg(data, theta, phi, method='simp')
 
     # only consider first quantity
     avgdata = avgdata[:,0]
@@ -100,6 +105,10 @@ def test():
     l2norm = numpy.sqrt(dr*numpy.sum((true-avgdata)**2))
 
     print "\nL2 Norm: ",l2norm
+    print
+
+    endtime = time.time()
+    print "elapsed time: ", endtime-starttime
     print
 
     pylab.clf()
@@ -121,3 +130,4 @@ def test():
 if __name__ == "__main__":
 
    test()
+

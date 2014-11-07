@@ -9,11 +9,13 @@ import os
 import relative_import
 unit_test_dir = os.path.dirname(os.path.realpath(__file__)) # path of this file
 relative_import.append_path(unit_test_dir+"/..")
-#from integrate import integrate1D as int1D
-from integratef90 import integrate1d as int1D
+#from integrate import integrate1D as int1D  # pure python version
+import integratef90                          # fortran f2py version
+int1D = integratef90.integratef90.integrate1d   # f90: case insensitive
 import numpy
 from numpy import exp, cos, sin
 import pylab
+import time
 
 def func(x):
     return numpy.sin(numpy.pi*x)
@@ -26,6 +28,8 @@ def exact(xlo, xhi):
     #return f(xhi) - f(xlo)
 
 def test():
+
+    starttime = time.time()
 
     xlo = 0.
     xhi = 1.0
@@ -51,6 +55,10 @@ def test():
         dx.append(delta)
         err.append(e)
         print n, delta, integral, e
+
+    endtime = time.time()
+    print "\nelapsed time: ", endtime-starttime
+    print
 
     dx = numpy.array(dx)
     err = numpy.array(err)
@@ -78,3 +86,4 @@ def test():
 if __name__ == "__main__":
 
    test()
+
