@@ -1,0 +1,42 @@
+
+	Example code to show how to interface Fortran and Python using f2py
+
+	The makefile will compile the pure fortran code as well as the 
+		f2py Python modules (if envoked with the default python=t)
+
+	Debugging flags will need to be manually entered in place of the
+		my_gfortran_debug variable
+
+		As the name suggests, the makefile is set up to use gfortran
+
+		Using another compiler *should* be doable, but you will 
+			need to check with f2py to see what compilers it
+			supports by executing: "f2py -c --help-fcompiler"
+
+			you will need to change each instance of "gfortran"
+			and the "--fcompiler=gnu95" to the appropriate
+			f2py value
+
+
+	Interfacing Fortran & Python is pretty straightforward if the Fortran
+		code has no dependenices such as modules envoked with "use ..."
+
+		the integratef90.f90 is an example of such a Fortran code.
+		the Fortran modifications involve simple f2py directives that
+		are included as comments.
+		python_driver.py shows how you would call it from python and
+		the makefile shows how it would be compiled using f2py
+
+	When the Fortran code does have dependencies such as "use ..." then
+		care needs to be taken when compiling using f2py
+
+		the functionf90.f90 is an example of such a Fortran code, 
+		it depends on integratef90.f90
+		python_driver.py shows how you would call it from python and
+		the makefile shows how it would be compiled using f2py
+
+		the main difference is that it depends on both *.f90
+		files, i.e. functionf90.f90 and integratef90.f90
+
+
+	R. Orvedahl 11-7-2014
